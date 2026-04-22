@@ -1,0 +1,15 @@
+[Unit]
+Description=Foli SIRI data harvester
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/omat/foli-data-collector
+ExecStart=%h/omat/foli-data-collector/.venv/bin/python -m foli_harvester collect
+Restart=always
+RestartSec=15
+
+[Install]
+WantedBy=default.target
+
