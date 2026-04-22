@@ -153,6 +153,57 @@ The compose service uses `restart: unless-stopped` and the image healthcheck run
 python -m foli_harvester healthcheck
 ```
 
+## Build Windows EXE Locally
+
+The project can be packaged as a simple portable Windows folder.
+
+Create a Windows virtual environment and install the build dependencies:
+
+```powershell
+py -3.14 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements-build.txt
+```
+
+Build the portable EXE folder:
+
+```powershell
+.\scripts\build-windows-exe.ps1
+```
+
+The output is:
+
+```text
+dist\foli-harvester\
+```
+
+That folder contains `foli-harvester.exe`, `.env.example`, and simple command wrappers:
+
+```powershell
+.\dist\foli-harvester\foli-harvester.exe --help
+.\dist\foli-harvester\init-db.cmd
+.\dist\foli-harvester\collect.cmd
+.\dist\foli-harvester\healthcheck.cmd
+.\dist\foli-harvester\fetch-gtfs-once.cmd
+```
+
+Before running the EXE with private configuration, copy the example file inside the output
+folder:
+
+```powershell
+Copy-Item .\dist\foli-harvester\.env.example .\dist\foli-harvester\.env
+```
+
+Then edit `dist\foli-harvester\.env`. Keep the default `file:data/foli.db` value for local
+SQLite storage, or add your own Turso URL and token. The EXE looks for `.env` beside
+`foli-harvester.exe` before falling back to the current working directory.
+
+Private credential policy:
+
+- `.env` is ignored by Git and is not copied into the portable EXE folder.
+- Turso keys are never baked into the EXE.
+- Anyone receiving the EXE must use their own `.env` or the default local SQLite database.
+
 ## GTFS Archive Strategy
 
 GTFS files are stored under `data/gtfs/` with UTC download-date filenames such as:

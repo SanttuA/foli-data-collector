@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import platform
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -11,7 +12,24 @@ def _load_dotenv() -> None:
         from dotenv import load_dotenv
     except ImportError:
         return
+
+    dotenv_path = _find_dotenv_path()
+    if dotenv_path is not None:
+        load_dotenv(dotenv_path=dotenv_path)
+        return
     load_dotenv()
+
+
+def _find_dotenv_path() -> Path | None:
+    candidates: list[Path] = []
+    if getattr(sys, "frozen", False):
+        candidates.append(Path(sys.executable).resolve().parent / ".env")
+    candidates.append(Path.cwd() / ".env")
+
+    for candidate in candidates:
+        if candidate.is_file():
+            return candidate
+    return None
 
 
 def _int_env(name: str, default: int) -> int:
@@ -74,4 +92,3 @@ class Config:
     @property
     def gtfs_interval_seconds(self) -> int:
         return self.gtfs_archive_interval_hours * 60 * 60
-
