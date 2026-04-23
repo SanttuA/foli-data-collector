@@ -1,3 +1,36 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "foli-data-collector"
+version = "0.1.0"
+description = "Collector for Turku Foli SIRI, alerts, and GTFS archive data."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+dependencies = [
+    "libsql>=0.1.9",
+    "python-dotenv>=1.0.0",
+    "requests>=2.31.0",
+]
+
+[project.scripts]
+foli-harvester = "foli_harvester.cli:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+    "requests-mock>=1.11.0",
+    "ruff>=0.5.0",
+]
+build = [
+    "pyinstaller>=6.11.0",
+]
+
+[tool.setuptools.packages.find]
+include = ["foli_harvester*"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 
@@ -7,4 +40,3 @@ target-version = "py311"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
-

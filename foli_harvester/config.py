@@ -61,7 +61,7 @@ class Config:
     healthcheck_vm_max_age_seconds: int
 
     @classmethod
-    def from_env(cls) -> "Config":
+    def from_env(cls) -> Config:
         _load_dotenv()
         default_instance_id = f"{platform.node() or 'host'}-{os.getpid()}"
         return cls(

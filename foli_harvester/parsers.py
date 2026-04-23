@@ -7,7 +7,6 @@ from typing import Any
 
 from .timeutils import unix_to_iso
 
-
 _ISO_DURATION_RE = re.compile(
     r"^(?P<sign>[+-])?P"
     r"(?:(?P<days>\d+(?:\.\d+)?)D)?"
@@ -256,4 +255,3 @@ def _single_or_none(value: Any) -> str | None:
 
 def _json_text(value: Any) -> str:
     return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
-

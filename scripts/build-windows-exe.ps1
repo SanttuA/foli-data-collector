@@ -13,12 +13,16 @@ $EntryPoint = Join-Path $ProjectRoot "foli_harvester\exe_entry.py"
 
 Push-Location $ProjectRoot
 try {
-    python -m PyInstaller --version | Out-Host
-    if ($LASTEXITCODE -ne 0) {
-        throw "PyInstaller is not available. Run: pip install -r requirements-build.txt"
+    if (-not (Get-Command uv -ErrorAction SilentlyContinue)) {
+        throw "uv is required. Install uv, then run: uv sync --group build"
     }
 
-    python -m PyInstaller `
+    uv run --group build python -m PyInstaller --version | Out-Host
+    if ($LASTEXITCODE -ne 0) {
+        throw "PyInstaller is not available. Run: uv sync --group build"
+    }
+
+    uv run --group build python -m PyInstaller `
         --noconfirm `
         --clean `
         --onedir `
