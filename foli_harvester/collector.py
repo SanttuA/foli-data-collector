@@ -3,9 +3,9 @@ from __future__ import annotations
 import logging
 import signal
 import time
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Callable
 
 from .client import FoliClient
 from .config import Config
@@ -15,7 +15,6 @@ from .lock import CollectorLock
 from .parsers import parse_alerts_payload, parse_vm_payload
 from .storage import PollRecord, Storage
 from .timeutils import add_seconds, isoformat_z, parse_utc, seconds_between, utc_now
-
 
 SOURCE_VM = "siri_vm"
 SOURCE_ALERTS = "siri_alerts"
@@ -256,7 +255,8 @@ class Collector:
         gap_seconds = seconds_between(collected_at, previous_success) if ok else None
         failures = 0 if ok else _previous_failures(previous_state) + 1
         last_success = isoformat_z(collected_at) if ok else previous_success
-        next_due = add_seconds(collected_at, interval_seconds if ok else self._backoff_seconds(failures))
+        next_interval = interval_seconds if ok else self._backoff_seconds(failures)
+        next_due = add_seconds(collected_at, next_interval)
         poll_id = self.storage.record_poll(
             PollRecord(
                 source=source,

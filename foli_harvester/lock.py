@@ -5,7 +5,6 @@ from dataclasses import dataclass
 from .storage import Storage
 from .timeutils import add_seconds, isoformat_z, parse_utc, utc_now
 
-
 LOCK_NAME = "foli_harvester"
 
 
@@ -66,4 +65,3 @@ class CollectorLock:
 def _is_expired(expires_at_utc: str | None) -> bool:
     expires_at = parse_utc(expires_at_utc)
     return expires_at is None or expires_at <= utc_now()
-

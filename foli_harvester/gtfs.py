@@ -73,7 +73,8 @@ def write_gtfs_archive(
         sha256=sha256_bytes(body),
         byte_size=len(body),
         etag=headers.get("ETag") or headers.get("etag"),
-        last_modified=http_date_to_iso(headers.get("Last-Modified") or headers.get("last-modified")),
+        last_modified=http_date_to_iso(
+            headers.get("Last-Modified") or headers.get("last-modified")
+        ),
         source_url=source_url,
     )
-

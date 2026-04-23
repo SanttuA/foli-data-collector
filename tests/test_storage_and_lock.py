@@ -1,11 +1,11 @@
 import unittest
 from datetime import timedelta
-from tempfile import TemporaryDirectory
 from pathlib import Path
+from tempfile import TemporaryDirectory
 
-from foli_harvester.db import connect_database
 from foli_harvester.collector import Collector
 from foli_harvester.config import Config
+from foli_harvester.db import connect_database
 from foli_harvester.lock import CollectorLock
 from foli_harvester.storage import PollRecord, Storage
 from foli_harvester.timeutils import add_seconds, isoformat_z, utc_now

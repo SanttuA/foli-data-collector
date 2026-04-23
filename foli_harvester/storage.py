@@ -7,7 +7,6 @@ from typing import Any
 from .db import first_column, init_schema, row_to_dict
 from .timeutils import isoformat_z, utc_now
 
-
 POLL_COLUMNS = [
     "id",
     "source",
@@ -117,7 +116,9 @@ class Storage:
         ).fetchone()
         return int(first_column(row))
 
-    def insert_vehicle_observations(self, poll_id: int, observations: Iterable[dict[str, Any]]) -> None:
+    def insert_vehicle_observations(
+        self, poll_id: int, observations: Iterable[dict[str, Any]]
+    ) -> None:
         now = isoformat_z(utc_now())
         self.conn.executemany(
             """
@@ -157,7 +158,10 @@ class Storage:
                 next_expected_departure_time_utc,
                 created_at_utc
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+            )
             """,
             [
                 (
@@ -424,4 +428,3 @@ def _bool_to_db(value: Any) -> int | None:
     if value is None:
         return None
     return 1 if bool(value) else 0
-

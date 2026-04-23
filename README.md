@@ -39,6 +39,9 @@ References:
 
 Copy `.env.example` to `.env` and edit the database and User-Agent values.
 
+This project uses [`uv`](https://docs.astral.sh/uv/) for dependency management.
+`uv sync` creates and updates the local `.venv`; activating it is optional.
+
 For local development without Turso, this works:
 
 ```env
@@ -56,30 +59,26 @@ TURSO_AUTH_TOKEN=your-token
 Windows PowerShell:
 
 ```powershell
-py -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-python -m foli_harvester init-db
-python -m foli_harvester collect
+uv sync
+uv run foli-harvester init-db
+uv run foli-harvester collect
 ```
 
 WSL or Linux:
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-python -m foli_harvester init-db
-python -m foli_harvester collect
+uv sync
+uv run foli-harvester init-db
+uv run foli-harvester collect
 ```
 
 ## Commands
 
 ```bash
-python -m foli_harvester init-db
-python -m foli_harvester collect
-python -m foli_harvester fetch-gtfs-once
-python -m foli_harvester healthcheck
+uv run foli-harvester init-db
+uv run foli-harvester collect
+uv run foli-harvester fetch-gtfs-once
+uv run foli-harvester healthcheck
 ```
 
 `collect` automatically creates the schema on startup, but `init-db` is useful for
@@ -103,16 +102,17 @@ expired, the new process takes over.
 
 ### Windows Task Scheduler
 
-After creating the virtual environment and installing dependencies:
+After syncing the uv environment:
 
 ```powershell
+uv sync
 .\scripts\register-windows-task.ps1
 ```
 
 The task starts at logon and restarts the collector after failures. The task runs:
 
 ```powershell
-.\.venv\Scripts\python.exe -m foli_harvester collect
+.\.venv\Scripts\foli-harvester.exe collect
 ```
 
 ### WSL
@@ -121,7 +121,7 @@ Use Linux `systemd --user` inside WSL if systemd is enabled. Otherwise create a 
 scheduled task that launches WSL:
 
 ```powershell
-wsl.exe --cd /home/<user>/omat/foli-data-collector -- .venv/bin/python -m foli_harvester collect
+wsl.exe --cd /home/<user>/omat/foli-data-collector -- .venv/bin/foli-harvester collect
 ```
 
 ### Linux systemd
@@ -150,19 +150,17 @@ docker compose logs -f
 The compose service uses `restart: unless-stopped` and the image healthcheck runs:
 
 ```bash
-python -m foli_harvester healthcheck
+foli-harvester healthcheck
 ```
 
 ## Build Windows EXE Locally
 
 The project can be packaged as a simple portable Windows folder.
 
-Create a Windows virtual environment and install the build dependencies:
+Sync a Windows uv environment with the build dependencies:
 
 ```powershell
-py -3.14 -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -r requirements-build.txt
+uv sync --python 3.14 --group build
 ```
 
 Build the portable EXE folder:
@@ -221,12 +219,10 @@ start date of the GTFS schedule.
 ## Development
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements-dev.txt
-python -m unittest discover -s tests
-python -m pytest
-python -m ruff check .
+uv sync --group dev
+uv run python -m unittest discover -s tests
+uv run pytest
+uv run ruff check .
 ```
 
 Optional live API smoke tests should be run manually so CI does not depend on Foli uptime.

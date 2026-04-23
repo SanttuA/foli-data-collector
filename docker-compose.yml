@@ -7,4 +7,4 @@ services:
         required: false
     volumes:
       - ./data:/app/data
-    command: ["python", "-m", "foli_harvester", "collect"]
+    command: ["foli-harvester", "collect"]

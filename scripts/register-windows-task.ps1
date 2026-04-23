@@ -3,10 +3,14 @@ param(
     [string]$ProjectDir = (Resolve-Path ".").Path
 )
 
-$Python = Join-Path $ProjectDir ".venv\Scripts\python.exe"
+$Executable = Join-Path $ProjectDir ".venv\Scripts\foli-harvester.exe"
+if (-not (Test-Path $Executable)) {
+    throw "foli-harvester entry point was not found at '$Executable'. Run: uv sync"
+}
+
 $Action = New-ScheduledTaskAction `
-    -Execute $Python `
-    -Argument "-m foli_harvester collect" `
+    -Execute $Executable `
+    -Argument "collect" `
     -WorkingDirectory $ProjectDir
 $Trigger = New-ScheduledTaskTrigger -AtLogOn
 $Settings = New-ScheduledTaskSettingsSet `
@@ -23,4 +27,3 @@ Register-ScheduledTask `
     -Force
 
 Write-Host "Registered scheduled task '$TaskName'."
-

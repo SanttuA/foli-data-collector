@@ -5,7 +5,6 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 
-
 LOCAL_SCHEMES = {"", "file"}
 
 
@@ -42,7 +41,7 @@ def connect_database(database_url: str, auth_token: str | None = None) -> Any:
     except ImportError as exc:
         raise RuntimeError(
             "Remote Turso/libSQL URLs require the `libsql` package. "
-            "Install dependencies with `pip install -r requirements.txt`."
+            "Install dependencies with `uv sync`."
         ) from exc
     return libsql.connect(database_url, auth_token=auth_token)
 
@@ -215,4 +214,3 @@ def first_column(row: Any) -> Any:
     if isinstance(row, dict):
         return next(iter(row.values()))
     return row[0]
-
